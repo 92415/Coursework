@@ -10,26 +10,24 @@ import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@Path("users/")
+@Path("playlisttransfer/")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 @Produces(MediaType.APPLICATION_JSON)
 
-public class Users{
+public class PlaylistTransfer{
     @GET
     @Path("list")
-    public String UsersList() {
-        System.out.println("Invoked Users.UsersList()");
+    public String PlaylistTransferList() {
+        System.out.println("Invoked PlaylistTransfer.PlaylistTransferList()");
         JSONArray response = new JSONArray();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT UserID, Username, ValidatedData, Password, Token FROM Users");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT TransferID, ResourceID, PlaylistID FROM PlaylistTransfer");
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
-                row.put("UserID", results.getInt(1));
-                row.put("Username", results.getString(2));
-                row.put("ValidatedData", results.getString(3));
-                row.put("Password", results.getString(4));
-                row.put("Token", results.getString(5));
+                row.put("TransferID", results.getInt(1));
+                row.put("ResourceID", results.getInt(2));
+                row.put("PlaylistID", results.getInt(3));
                 response.add(row);
             }
             return response.toString();
@@ -40,21 +38,19 @@ public class Users{
     }
     @POST
     @Path("add")
-    public String UsersAdd(@FormDataParam("Username") String Username, @FormDataParam("ValidatedData") String ValidatedData, @FormDataParam("Password") String Password, @FormDataParam("Token") String Token) {
-        System.out.println("Invoked Users.UsersAdd()");
+    public String PlaylistTransferAdd(@FormDataParam("ResourceID") Integer ResourceID, @FormDataParam("PlaylistID") Integer PlaylistID, @FormDataParam("UserID") Integer UserID) {
+        System.out.println("Invoked PlaylistTransfer.PlaylistTransferAdd()");
         try {
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users (Username, ValidatedData, Password, Token) VALUES (?, ?, ?, ?)");
-            ps.setString(1, Username);
-            ps.setString(2, ValidatedData);
-            ps.setString(3, Password);
-            ps.setString(4, Token);
+            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO PlaylistTransfer (ResourceID, PlaylistID, UserID) VALUES(?, ?, ?)");
+            ps.setInt(1, ResourceID);
+            ps.setInt(2, PlaylistID);
+            ps.setInt(3, UserID);
             ps.execute();
-            return "{\"OK\": \"Added user.\"}";
+            return "{\"OK\": \"Added Song.\"}";
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
             return "{\"Error\": \"Unable to create new item, please see server console for more info.\"}";
         }
 
     }
-
 }

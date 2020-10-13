@@ -10,26 +10,24 @@ import javax.ws.rs.core.MediaType;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-@Path("users/")
+@Path("playlists/")
 @Consumes(MediaType.MULTIPART_FORM_DATA)
 @Produces(MediaType.APPLICATION_JSON)
 
-public class Users{
+public class Playlists{
     @GET
     @Path("list")
-    public String UsersList() {
-        System.out.println("Invoked Users.UsersList()");
+    public String PlaylistList() {
+        System.out.println("Invoked Playlist.PlaylistList()");
         JSONArray response = new JSONArray();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT UserID, Username, ValidatedData, Password, Token FROM Users");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT PlaylistID, PlaylistName, Description FROM Playlists");
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
-                row.put("UserID", results.getInt(1));
-                row.put("Username", results.getString(2));
-                row.put("ValidatedData", results.getString(3));
-                row.put("Password", results.getString(4));
-                row.put("Token", results.getString(5));
+                row.put("PlaylistID", results.getInt(1));
+                row.put("PlaylistName", results.getString(2));
+                row.put("Descriptiom", results.getString(3));
                 response.add(row);
             }
             return response.toString();
@@ -40,21 +38,19 @@ public class Users{
     }
     @POST
     @Path("add")
-    public String UsersAdd(@FormDataParam("Username") String Username, @FormDataParam("ValidatedData") String ValidatedData, @FormDataParam("Password") String Password, @FormDataParam("Token") String Token) {
-        System.out.println("Invoked Users.UsersAdd()");
+    public String PlaylistsAdd(@FormDataParam("UserID") Integer UserID, @FormDataParam("PlaylistName") String PlaylistName, @FormDataParam("Description") String Description) {
+        System.out.println("Invoked Playlists.PlaylistsAdd()");
         try {
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users (Username, ValidatedData, Password, Token) VALUES (?, ?, ?, ?)");
-            ps.setString(1, Username);
-            ps.setString(2, ValidatedData);
-            ps.setString(3, Password);
-            ps.setString(4, Token);
+            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Playlists (UserID, PlaylistName, Description) VALUES (?, ?, ?)");
+            ps.setInt(1, UserID);
+            ps.setString(2, PlaylistName);
+            ps.setString(3, Description);
             ps.execute();
-            return "{\"OK\": \"Added user.\"}";
+            return "{\"OK\": \"Added Playlist.\"}";
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
             return "{\"Error\": \"Unable to create new item, please see server console for more info.\"}";
         }
 
     }
-
 }
