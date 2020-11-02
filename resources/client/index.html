@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Web Page</title>
+    <script src="js/users.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+
 </head>
 <body>
-Hello World!
+<button onclick="getUsersList();">RUN MY FUNCTION</button>
+    <table id="UsersTable" align="center">
+    </table>
+    <form id="userDetails">
+        User ID: <input type="text" id="UserID">
+    </form>
+    <button onclick="getUser();">Run getUser</button>
+    <div id="DisplayOneUser"></div>
+    <form id="InputUserDetails">
+    Username: <input type="text" name="Username">
+    Password: <input type="text" name="Password">
+    Token: <input type="text" name="Token">
+    </form>
+    <button onclick="addUser();">Add User</button>
 </body>
 </html>
