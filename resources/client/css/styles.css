@@ -1,7 +1,32 @@
 body{
-    background-color: darkslategray;
+    background-color: #b0d4eb;
     font-family: "Franklin Gothic Heavy";
-    color: azure;
+    color: #2c3e4a;
     font-size: 30px;
     text-align: center;
+    margin: 0px;
+}
+#accountmake{
+    border-style: solid;
+    border-color: black;
+    float: left;
+    width: 30%;
+    align-content: center;
+    margin-left: 15%;
+}
+#login{
+    border-style: solid;
+    border-color: black;
+    float: right;
+    width: 30%;
+    align-content: center;
+    margin-right: 15%;
+}
+#header{
+    border-style: solid;
+    border-color: black;
+    font-size: 80px;
+}
+#mainheader{
+
 }
