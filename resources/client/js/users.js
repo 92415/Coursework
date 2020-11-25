@@ -41,37 +41,38 @@ function getUser() {
 
 function addUser() {
     console.log("Invoked AddUser()");
-    //var tokengen = document.getElementById("token");
-    //inttoken = Math.floor((Math.random() * 999999) + 1);
-    //if (inttoken >= 100000){
-    //    tokengen = "" + inttoken;
-    //}else if(inttoken >= 10000){
-    //    tokengen = "0" + inttoken;
-    //}else if (inttoken >= 1000){
-    //    tokengen = "00" + inttoken;
-    //}else if (inttoken >= 100){
-    //    tokengen = "000" + inttoken;
-    //}else if (inttoken >= 10){
-    //    tokengen = "0000" + inttoken;
-    //}else{
-    //    tokengen = "00000" + inttoken;
-    //}
-    //var x = 1;
-    //while (x=1){
-    const formData = new FormData(document.getElementById('InputUserDetails'));
-    let url = "/users/add";
-    fetch(url, {
-        method: "POST",
-        body: formData,
-    }).then(response => {
-        return response.json()
-    }).then(response => {
-        if (response.hasOwnProperty("Error")) {
-            alert(JSON.stringify(response));
-        } else {
-            window.open("/client/resources.html", "_self");
-        }
-    });
+    if(document.getElementById('password').value === document.getElementById('checkpassword').value){
+        const formData = new FormData(document.getElementById('InputUserDetails'));
+        let url = "/users/add";
+        fetch(url, {
+            method: "POST",
+            body: formData,
+        }).then(response => {
+            return response.json()
+        }).then(response => {
+            if (response.hasOwnProperty("Error")) {
+                alert(JSON.stringify(response));
+            } else {
+                let url = "/users/login";
+                fetch(url, {
+                    method: "POST",
+                    body: formData,
+                }).then(response => {
+                    return response.json();
+                }).then(response => {
+                    if (response.hasOwnProperty("Error")) {
+                        alert(JSON.stringify(response));
+                    } else {
+                        Cookies.set("Token", response.Token);
+                        Cookies.set("UserName", response.UserName);
+                        window.open("resources.html", "_self");
+                    }
+                });
+            }
+        });
+    }else{
+        console.log("Passwords don't match");
+    }
 }
 
 function login(){
@@ -93,6 +94,24 @@ function login(){
         }
     });
 
+}
+
+function logout() {
+    debugger;
+    console.log("Invoked logout");
+    let url = "/users/logout";
+    fetch(url, {method: "POST"
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));
+        } else {
+            Cookies.remove("Token", response.Token);
+            Cookies.remove("Username", response.Username);
+            window.open("index.html", "_self");
+        }
+    });
 }
 
 

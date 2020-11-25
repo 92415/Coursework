@@ -28,5 +28,25 @@ body{
     font-size: 80px;
 }
 #mainheader{
+    border-style:solid;
+    border-color: black;
+    font-size: 80px;
+    height: 10%;
+}
 
+a:link,a:visited{
+    background-color: cornflowerblue;
+    color: #2c3e4a;
+    text-align: center;
+    padding: 14px 25px;
+    text-decoration: none;
+    display: inline-block;
+    border-style: solid;
+    border-color: black;
+    border-top: #b0d4eb;
+    width: 20%;
+}
+
+a:hover, a:active{
+    background-color: grey;
 }

@@ -22,14 +22,13 @@ public class Users{
         System.out.println("Invoked Users.UsersList()");
         JSONArray response = new JSONArray();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT UserID, Username, Password, Token FROM Users");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT UserID, Username, PasswordFROM Users");
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
                 row.put("UserID", results.getInt(1));
                 row.put("Username", results.getString(2));
                 row.put("Password", results.getString(3));
-                row.put("Token", results.getString(4));
                 response.add(row);
             }
             return response.toString();
@@ -40,13 +39,12 @@ public class Users{
     }
     @POST
     @Path("add")
-    public String UsersAdd(@FormDataParam("Username") String Username, @FormDataParam("ValidatedData") String ValidatedData, @FormDataParam("Password") String Password, @FormDataParam("Token") String Token) {
+    public String UsersAdd(@FormDataParam("Username") String Username, @FormDataParam("Password") String Password) {
         System.out.println("Invoked Users.UsersAdd()");
         try {
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users (Username, Password, Token) VALUES (?, ?, ?)");
+            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users (Username, Password) VALUES (?, ?)");
             ps.setString(1, Username);
             ps.setString(2, Password);
-            ps.setString(3, Token);
             ps.execute();
             return "{\"OK\": \"Added user.\"}";
         } catch (Exception exception) {
@@ -108,6 +106,31 @@ public class Users{
             return "{\"Error\": \"Server side error!\"}";
         }
     }
+    @POST
+    @Path("logout")
+    public static String logout(@CookieParam("Token") String Token){
+        try{
+            System.out.println("users/logout "+ Token);
+            PreparedStatement ps = Main.db.prepareStatement("SELECT UserID FROM Users WHERE Token=?");
+            ps.setString(1, Token);
+            ResultSet logoutResults = ps.executeQuery();
+            if (logoutResults.next()){
+                int UserID = logoutResults.getInt(1);
+                //Set the token to null to indicate that the user is not logged in
+                PreparedStatement ps1 = Main.db.prepareStatement("UPDATE Users SET Token = NULL WHERE UserID = ?");
+                ps1.setInt(1, UserID);
+                ps1.executeUpdate();
+                return "{\"status\": \"OK\"}";
+            } else {
+                return "{\"error\": \"Invalid token!\"}";
+
+            }
+        } catch (Exception ex) {
+            System.out.println("Database error during /users/logout: " + ex.getMessage());
+            return "{\"error\": \"Server side error!\"}";
+        }
+    }
+
 
 
 
