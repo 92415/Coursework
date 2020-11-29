@@ -42,36 +42,42 @@ function getUser() {
 function addUser() {
     console.log("Invoked AddUser()");
     if(document.getElementById('password').value === document.getElementById('checkpassword').value){
-        const formData = new FormData(document.getElementById('InputUserDetails'));
-        let url = "/users/add";
-        fetch(url, {
-            method: "POST",
-            body: formData,
-        }).then(response => {
-            return response.json()
-        }).then(response => {
-            if (response.hasOwnProperty("Error")) {
-                alert(JSON.stringify(response));
-            } else {
-                let url = "/users/login";
-                fetch(url, {
-                    method: "POST",
-                    body: formData,
-                }).then(response => {
-                    return response.json();
-                }).then(response => {
-                    if (response.hasOwnProperty("Error")) {
-                        alert(JSON.stringify(response));
-                    } else {
-                        Cookies.set("Token", response.Token);
-                        Cookies.set("UserName", response.UserName);
-                        window.open("resources.html", "_self");
-                    }
-                });
-            }
-        });
+        if (((document.getElementById('password').value).length >= 5) && ((document.getElementById('password').value).length <=15)){
+            const formData = new FormData(document.getElementById('InputUserDetails'));
+            let url = "/users/add";
+            fetch(url, {
+                method: "POST",
+                body: formData,
+            }).then(response => {
+                return response.json()
+            }).then(response => {
+                if (response.hasOwnProperty("Error")) {
+                    alert(JSON.stringify(response));
+                } else {
+                    let url = "/users/login";
+                    fetch(url, {
+                        method: "POST",
+                        body: formData,
+                    }).then(response => {
+                        return response.json();
+                    }).then(response => {
+                        if (response.hasOwnProperty("Error")) {
+                            alert(JSON.stringify(response));
+                        } else {
+                            Cookies.set("Token", response.Token);
+                            Cookies.set("UserName", response.UserName);
+                            window.open("resources.html", "_self");
+                        }
+                    });
+                }
+            });
+        }else{
+            alert("Password must be between 5 and 15 characters long");
+        }
+
     }else{
         console.log("Passwords don't match");
+        alert("Passwords don't match");
     }
 }
 

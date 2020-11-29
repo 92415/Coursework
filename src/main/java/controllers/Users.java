@@ -86,6 +86,12 @@ public class Users{
             if (loginResults.next() == true) {
                 String correctPassword = loginResults.getString(1);
                 if (Password.equals(correctPassword)) {
+                    String token = null;
+                    PreparedStatement ps3 = Main.db.prepareStatement("UPDATE Users SET Token = ?");
+                    ps3.setString(1, token);
+                    ps3.executeUpdate();
+                    JSONObject userDetails1 = new JSONObject();
+                    userDetails1.put("Token", token);
                     String Token = UUID.randomUUID().toString();
                     PreparedStatement ps2 = Main.db.prepareStatement("UPDATE Users SET Token = ? WHERE Username = ?");
                     ps2.setString(1, Token);
