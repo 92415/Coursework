@@ -136,8 +136,4 @@ public class Users{
             return "{\"error\": \"Server side error!\"}";
         }
     }
-
-
-
-
 }

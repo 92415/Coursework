@@ -120,5 +120,29 @@ function logout() {
     });
 }
 
+function showResources(){
+    window.open("index.html","_self");
+    console.log("Invoked showResources()");
+    const url = "/Resources/list/";
+    fetch(url, {
+        method: "GET",
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));
+        } else {
+            formatResourcesList(response);
+        }
+    });
+}
+
+function formatResourcesList(myJSONArray){
+    let dataHTML = "";
+    for (let item of myJSONArray) {
+        dataHTML += "<tr><td>" + item.SongName + "<td><td>" + item.ArtistName + "<tr><td>" + item.FeatureName + "<tr><td>";
+    }
+    document.getElementById("ResourceTable").innerHTML = dataHTML;
+}
 
 

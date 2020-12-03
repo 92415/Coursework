@@ -21,12 +21,13 @@ public class Resources{
         System.out.println("Invoked Resources.ResourceList()");
         JSONArray response = new JSONArray();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT ResourceID, SongID FROM Resources");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongName, Artists.ArtistName, Artists.ArtistName FROM Libraries INNER JOIN Resources ON Libraries.SongID = Resources.SongID WHERE");
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
-                row.put("ResourceID", results.getInt(1));
-                row.put("SongID", results.getInt(2));
+                row.put("SongName", results.getInt(1));
+                row.put("ArtistName", results.getInt(2));
+                row.put("FeatureName",results.getInt(3));
                 response.add(row);
             }
             return response.toString();
@@ -50,5 +51,22 @@ public class Resources{
             return "{\"Error\": \"Unable to create new item, please see server console for more info.\"}";
         }
 
+    }
+    @POST
+    @Path("delete/{ResourceID}")
+    public String DeleteResource(@PathParam("ResourceID") Integer ResourceID) throws Exception {
+        System.out.println("Invoked Resources.DeleteResource()");
+        if (ResourceID == null) {
+            throw new Exception("ResourceID is missing in the HTTP request's URL.");
+        }
+        try {
+            PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Resources WHERE ResourceID = ?");
+            ps.setInt(1, ResourceID);
+            ps.execute();
+            return "{\"OK\": \"Song deleted\"}";
+        } catch (Exception exception) {
+            System.out.println("Database error: " + exception.getMessage());
+            return "{\"Error\": \"Unable to delete item, please see server console for more info.\"}";
+        }
     }
 }
