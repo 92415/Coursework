@@ -121,9 +121,8 @@ function logout() {
 }
 
 function showResources(){
-    window.open("index.html","_self");
     console.log("Invoked showResources()");
-    const url = "/Resources/list/";
+    const url = "/resources/list/";
     fetch(url, {
         method: "GET",
     }).then(response => {
@@ -138,9 +137,9 @@ function showResources(){
 }
 
 function formatResourcesList(myJSONArray){
-    let dataHTML = "";
+    let dataHTML = "<tr><td>" + "SongName" + "<td><td>" + "ArtistName" + "<tr><td>";
     for (let item of myJSONArray) {
-        dataHTML += "<tr><td>" + item.SongName + "<td><td>" + item.ArtistName + "<tr><td>" + item.FeatureName + "<tr><td>";
+        dataHTML += "<tr><td>" + item.SongName + "<td><td>" + item.ArtistName + "<tr><td>";
     }
     document.getElementById("ResourceTable").innerHTML = dataHTML;
 }

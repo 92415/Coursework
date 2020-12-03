@@ -21,13 +21,12 @@ public class Resources{
         System.out.println("Invoked Resources.ResourceList()");
         JSONArray response = new JSONArray();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongName, Artists.ArtistName, Artists.ArtistName FROM Libraries INNER JOIN Resources ON Libraries.SongID = Resources.SongID WHERE");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongName, Artists.ArtistName FROM Artists INNER JOIN Libraries ON Artists.ArtistID = Libraries.ArtistID INNER JOIN Resources ON Libraries.SongID = Resources.SongID INNER JOIN USERS ON (Resources.UserID = Users.UserID) WHERE (Users.Token IS NOT NULL) ORDER BY SongName" + "");
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
-                row.put("SongName", results.getInt(1));
-                row.put("ArtistName", results.getInt(2));
-                row.put("FeatureName",results.getInt(3));
+                row.put("SongName", results.getString(1));
+                row.put("ArtistName", results.getString(2));
                 response.add(row);
             }
             return response.toString();

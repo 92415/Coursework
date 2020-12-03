@@ -50,3 +50,9 @@ a:link,a:visited{
 a:hover, a:active{
     background-color: grey;
 }
+
+#ResourceTable{
+    width: 100%;
+    align-content: center;
+    font-size: 40px;
+}
