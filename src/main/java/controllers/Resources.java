@@ -21,12 +21,13 @@ public class Resources{
         System.out.println("Invoked Resources.ResourceList()");
         JSONArray response = new JSONArray();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongName, Artists.ArtistName FROM Artists INNER JOIN Libraries ON Artists.ArtistID = Libraries.ArtistID INNER JOIN Resources ON Libraries.SongID = Resources.SongID INNER JOIN USERS ON (Resources.UserID = Users.UserID) WHERE (Users.Token IS NOT NULL) ORDER BY SongName" + "");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongName, Libraries.ArtistName, Libraries.FeatureName FROM Libraries INNER JOIN Resources ON Libraries.SongID = Resources.SongID INNER JOIN USERS ON (Resources.UserID = Users.UserID) WHERE (Users.Token IS NOT NULL) ORDER BY SongName");
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
                 row.put("SongName", results.getString(1));
                 row.put("ArtistName", results.getString(2));
+                row.put("FeatureName", results.getString(3));
                 response.add(row);
             }
             return response.toString();
@@ -52,15 +53,17 @@ public class Resources{
 
     }
     @POST
-    @Path("delete/{ResourceID}")
-    public String DeleteResource(@PathParam("ResourceID") Integer ResourceID) throws Exception {
+    @Path("delete/{SongName}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String DeleteResource(@PathParam("SongName") String SongName) throws Exception {
         System.out.println("Invoked Resources.DeleteResource()");
-        if (ResourceID == null) {
-            throw new Exception("ResourceID is missing in the HTTP request's URL.");
+        if (SongName == null) {
+            throw new Exception("SongName is missing in the HTTP request's URL.");
         }
         try {
-            PreparedStatement ps = Main.db.prepareStatement("DELETE FROM Resources WHERE ResourceID = ?");
-            ps.setInt(1, ResourceID);
+            PreparedStatement ps = Main.db.prepareStatement("Delete From Resources Where SongID = (Select SongID From Libraries Where SongName = ?)");
+            ps.setString(1, SongName);
             ps.execute();
             return "{\"OK\": \"Song deleted\"}";
         } catch (Exception exception) {

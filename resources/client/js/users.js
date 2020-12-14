@@ -42,7 +42,7 @@ function getUser() {
 function addUser() {
     console.log("Invoked AddUser()");
     if(document.getElementById('password').value === document.getElementById('checkpassword').value){
-        if (((document.getElementById('password').value).length >= 5) && ((document.getElementById('password').value).length <=15)){
+        if ((((document.getElementById('password').value).length >= 5) && ((document.getElementById('password').value).length <=15))&&(((document.getElementById('username').value).length >=5)&&((document.getElementById('username').value).length <=15))){
             const formData = new FormData(document.getElementById('InputUserDetails'));
             let url = "/users/add";
             fetch(url, {
@@ -72,7 +72,7 @@ function addUser() {
                 }
             });
         }else{
-            alert("Password must be between 5 and 15 characters long");
+            alert("Username and password must be between 5 and 15 characters long");
         }
 
     }else{
@@ -137,11 +137,35 @@ function showResources(){
 }
 
 function formatResourcesList(myJSONArray){
-    let dataHTML = "<tr><td>" + "SongName" + "<td><td>" + "ArtistName" + "<tr><td>";
+    let dataHTML = "";
     for (let item of myJSONArray) {
-        dataHTML += "<tr><td>" + item.SongName + "<td><td>" + item.ArtistName + "<tr><td>";
+        songname = item.SongName;
+        artistname = item.ArtistName;
+        featurename = item.FeatureName;
+        dataHTML += "<tr><td>" + songname + "<td>" + artistname + "<td>" + featurename + "<td>" + "<button type='button' onclick='removeResource(songname)'>" + "Delete</button>" + "<tr><td>";
     }
     document.getElementById("ResourceTable").innerHTML = dataHTML;
+}
+
+function removeResource(Name){
+    console.log("Invoked removeResource");
+    const url = "/resources/delete/";
+    const SongName = Name;
+    fetch(url + SongName, {
+        method: "POST",
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));
+        } else {
+            window.open("resources.html","_self");
+        }
+    });
+}
+
+function showlibrary(){
+    genre = location.search.substring(1);
 }
 
 
