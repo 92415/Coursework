@@ -42,35 +42,39 @@ function getUser() {
 function addUser() {
     console.log("Invoked AddUser()");
     if(document.getElementById('password').value === document.getElementById('checkpassword').value){
-        if ((((document.getElementById('password').value).length >= 5) && ((document.getElementById('password').value).length <=15))&&(((document.getElementById('username').value).length >=5)&&((document.getElementById('username').value).length <=15))){
-            const formData = new FormData(document.getElementById('InputUserDetails'));
-            let url = "/users/add";
-            fetch(url, {
-                method: "POST",
-                body: formData,
-            }).then(response => {
-                return response.json()
-            }).then(response => {
-                if (response.hasOwnProperty("Error")) {
-                    alert(JSON.stringify(response));
-                } else {
-                    let url = "/users/login";
-                    fetch(url, {
-                        method: "POST",
-                        body: formData,
-                    }).then(response => {
-                        return response.json();
-                    }).then(response => {
-                        if (response.hasOwnProperty("Error")) {
-                            alert(JSON.stringify(response));
-                        } else {
-                            Cookies.set("Token", response.Token);
-                            Cookies.set("UserName", response.UserName);
-                            window.open("resources.html", "_self");
-                        }
-                    });
-                }
-            });
+        if ((((document.getElementById('password').value).length >= 5) && ((document.getElementById('password').value).length <=15))&&(((document.getElementById('username').value).length >=5)&&((document.getElementById('username').value).length <=15))) {
+            if (spaceCheck(document.getElementById('password').value) && spaceCheck(document.getElementById('username').value)){
+                const formData = new FormData(document.getElementById('InputUserDetails'));
+                let url = "/users/add";
+                fetch(url, {
+                    method: "POST",
+                    body: formData,
+                }).then(response => {
+                    return response.json()
+                }).then(response => {
+                    if (response.hasOwnProperty("Error")) {
+                        alert(JSON.stringify(response));
+                    } else {
+                        let url = "/users/login";
+                        fetch(url, {
+                            method: "POST",
+                            body: formData,
+                        }).then(response => {
+                            return response.json();
+                        }).then(response => {
+                            if (response.hasOwnProperty("Error")) {
+                                alert(JSON.stringify(response));
+                            } else {
+                                Cookies.set("Token", response.Token);
+                                Cookies.set("UserName", response.UserName);
+                                window.open("resources.html", "_self");
+                            }
+                        });
+                    }
+                });
+            }else{
+                alert("Username and password must not contain spaces");
+            }
         }else{
             alert("Username and password must be between 5 and 15 characters long");
         }
@@ -120,6 +124,17 @@ function logout() {
     });
 }
 
+function spaceCheck(logins){
+    var i;
+    var spaces = 0;
+    for (i = 0; i < logins.length; i++){
+        if (logins.charAt(i) === ' '){
+            spaces = spaces + 1;
+        }
+    }
+    return spaces === 0;
+}
+
 function showResources(){
     console.log("Invoked showResources()");
     const url = "/resources/list/";
@@ -167,5 +182,7 @@ function removeResource(Name){
 function showlibrary(){
     genre = location.search.substring(1);
 }
+
+
 
 
