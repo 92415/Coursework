@@ -40,7 +40,6 @@ function getUser() {
 }
 
 function addUser() {
-    console.log("Invoked AddUser()");
     if(document.getElementById('password').value === document.getElementById('checkpassword').value){
         if ((((document.getElementById('password').value).length >= 5) && ((document.getElementById('password').value).length <=15))&&(((document.getElementById('username').value).length >=5)&&((document.getElementById('username').value).length <=15))) {
             if (spaceCheck(document.getElementById('password').value) && spaceCheck(document.getElementById('username').value)){

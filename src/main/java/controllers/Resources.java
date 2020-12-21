@@ -20,6 +20,7 @@ public class Resources{
     public String ResourceList() {
         System.out.println("Invoked Resources.ResourceList()");
         JSONArray response = new JSONArray();
+        String Featured;
         try {
             PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongName, Libraries.ArtistName, Libraries.FeatureName FROM Libraries INNER JOIN Resources ON Libraries.SongID = Resources.SongID INNER JOIN USERS ON (Resources.UserID = Users.UserID) WHERE (Users.Token IS NOT NULL) ORDER BY SongName");
             ResultSet results = ps.executeQuery();
@@ -27,7 +28,12 @@ public class Resources{
                 JSONObject row = new JSONObject();
                 row.put("SongName", results.getString(1));
                 row.put("ArtistName", results.getString(2));
-                row.put("FeatureName", results.getString(3));
+                if (results.getString(3) == null){
+                    Featured = "";
+                }else{
+                    Featured = results.getString(3);
+                }
+                row.put("FeatureName", Featured);
                 response.add(row);
             }
             return response.toString();

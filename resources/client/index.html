@@ -12,14 +12,15 @@
     <div id="header">
         Melondy
     </div>
-    <br><br>
+    <br>
     <div id="accountmake">
         Create an account<br><br>
         <form id="InputUserDetails">
         Username: <input type="text" name="Username" id="username"><br><br>
         Password: <input type="text" name="Password" id="password"><br><br>
+        Explicit: <input type="number" max=1 min=0 name="Explicit" id="explicit" value=1><br><br>
         </form>
-        Validated Password: <input type="text" name="Validated Password" id="checkpassword"><br><br><br>
+        Validated Password: <input type="text" name="Validated Password" id="checkpassword"><br>
         <button onclick="addUser();">Create Account</button>
         <br><br>
     </div>
@@ -27,7 +28,7 @@
         Login<br><br><br>
         <form id="accountdetails">
             Username: <input type="text" name="Username"><br><br><br>
-            Password: <input type="text" name="Password"><br><br><br>
+            Password: <input type="text" name="Password"><br><br><br><br>
         </form>
         <button  onclick="login();">Login</button>
         <br><br>

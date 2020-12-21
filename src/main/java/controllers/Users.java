@@ -38,13 +38,17 @@ public class Users{
         }
     }
     @POST
-    @Path("add")
-    public String UsersAdd(@FormDataParam("Username") String Username, @FormDataParam("Password") String Password) {
+    @Path("add/")
+    public String UsersAdd(@FormDataParam("Username") String Username, @FormDataParam("Password") String Password, @FormDataParam("Explicit") Integer Explicit){
         System.out.println("Invoked Users.UsersAdd()");
+        if (Explicit == null){
+            Explicit = 1;
+        }
         try {
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users (Username, Password) VALUES (?, ?)");
+            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Users (Username, Password, AllowExplicit) VALUES (?, ?, ?)");
             ps.setString(1, Username);
             ps.setString(2, Password);
+            ps.setInt(3, Explicit);
             ps.execute();
             return "{\"OK\": \"Added user.\"}";
         } catch (Exception exception) {
