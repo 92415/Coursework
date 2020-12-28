@@ -161,11 +161,10 @@ function formatResourcesList(myJSONArray){
     document.getElementById("ResourceTable").innerHTML = dataHTML;
 }
 
-function removeResource(Name){
+function removeResource(songname){
     console.log("Invoked removeResource");
     const url = "/resources/delete/";
-    const SongName = Name;
-    fetch(url + SongName, {
+    fetch(url + songname, {
         method: "POST",
     }).then(response => {
         return response.json();
@@ -179,7 +178,72 @@ function removeResource(Name){
 }
 
 function showlibrary(){
-    genre = location.search.substring(1);
+    const genre = location.search.substring(1);
+    console.log("Invoked showLibrary");
+    const url = "/libraries/list/";
+    fetch(url + genre, {
+        method: "GET",
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));
+        } else {
+            formatLibraryList(response);
+        }
+    });
+}
+
+function formatLibraryList(myJSONArray){
+    let dataHTML = "";
+    for (let item of myJSONArray) {
+        songname = item.SongName;
+        artistname = item.ArtistName;
+        featurename = item.FeatureName;
+        dataHTML += "<tr><td>" + songname + "<td>" + artistname + "<td>" + featurename + "<td>" + "<button type='button' onclick='addResource(songname)'>" + "Add</button>" + "<tr><td>";
+    }
+    document.getElementById("LibraryTable").innerHTML = dataHTML;
+
+}
+
+function addResource(SongName){
+
+}
+
+function search(){
+    let url = "results.html?" + document.getElementById('Searcher').value;
+    window.open(url, "_self");
+}
+
+function showSearch(){
+    let searcher = location.search.substring(1);
+    if (searcher === null){
+        searcher = "";
+    }
+    console.log("Invoked showSearch");
+    const url = "/libraries/search/";
+    fetch(url + searcher, {
+        method: "GET",
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));
+        } else {
+            formatSearchList(response);
+        }
+    });
+}
+
+function formatSearchList(myJSONArray){
+    let dataHTML = "";
+    for (let item of myJSONArray) {
+        songname = item.SongName;
+        artistname = item.ArtistName;
+        featurename = item.FeatureName;
+        dataHTML += "<tr><td>" + songname + "<td>" + artistname + "<td>" + featurename + "<td>" + "<button type='button' onclick='addResource(songname)'>" + "Add</button>" + "<tr><td>";
+    }
+    document.getElementById("SearchTable").innerHTML = dataHTML;
 }
 
 

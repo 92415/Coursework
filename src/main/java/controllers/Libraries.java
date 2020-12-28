@@ -16,19 +16,61 @@ import java.sql.ResultSet;
 
 public class Libraries{
     @GET
-    @Path("list")
-    public String LibrariesList() {
+    @Path("list/{genre}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String LibrariesList(@PathParam("genre") String Genre) throws Exception {
         System.out.println("Invoked Libraries.LibrariesList()");
         JSONArray response = new JSONArray();
+        if (Genre == null) {
+            throw new Exception("Genre is missing in the HTTP request's URL.");
+        }
+        String Featured;
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT SongID, SongName, ArtistID, FeatureID FROM Libraries");
+            PreparedStatement ps = Main.db.prepareStatement("Select SongName, ArtistName, FeatureName From Libraries WHERE (SongID NOT IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL))  AND (Genre = ?) Order By SongName");
+            ps.setString(1, Genre);
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
-                row.put("SongID", results.getInt(1));
-                row.put("SongName", results.getString(2));
-                row.put("ArtistID", results.getInt(3));
-                row.put("FeatureID", results.getInt(4));
+                row.put("SongName", results.getString(1));
+                row.put("ArtistName", results.getString(2));
+                if (results.getString(3) == null){
+                    Featured = "";
+                }else{
+                    Featured = results.getString(3);
+                }
+                row.put("FeatureName", Featured);
+                response.add(row);
+            }
+            return response.toString();
+        } catch (Exception exception) {
+            System.out.println("Database error: " + exception.getMessage());
+            return "{\"Error\": \"Unable to list items.  Error code xx.\"}";
+        }
+    }
+    @GET
+    @Path("search/{searcher}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String LibrariesSearch(@PathParam("searcher") String Search){
+        System.out.println("Invoked Libraries.LibrariesSearch()");
+        JSONArray response = new JSONArray();
+        String Featured;
+        Search = "%" + Search + "%";
+        try {
+            PreparedStatement ps = Main.db.prepareStatement("Select SongName, ArtistName, FeatureName From Libraries WHERE SongName LIKE ? Order By SongName");
+            ps.setString(1, Search);
+            ResultSet results = ps.executeQuery();
+            while (results.next()==true) {
+                JSONObject row = new JSONObject();
+                row.put("SongName", results.getString(1));
+                row.put("ArtistName", results.getString(2));
+                if (results.getString(3) == null){
+                    Featured = "";
+                }else{
+                    Featured = results.getString(3);
+                }
+                row.put("FeatureName", Featured);
                 response.add(row);
             }
             return response.toString();
