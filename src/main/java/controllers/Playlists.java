@@ -16,18 +16,17 @@ import java.sql.ResultSet;
 
 public class Playlists{
     @GET
-    @Path("list")
+    @Path("list/")
     public String PlaylistList() {
-        System.out.println("Invoked Playlist.PlaylistList()");
+        System.out.println("Invoked Playlists.PlaylistList()");
         JSONArray response = new JSONArray();
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT PlaylistID, PlaylistName, Description FROM Playlists");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT PlaylistID, PlaylistName FROM Playlists WHERE UserID = (SELECT UserID FROM Users WHERE Token IS NOT NULL) ORDER BY PlaylistName");
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
                 row.put("PlaylistID", results.getInt(1));
                 row.put("PlaylistName", results.getString(2));
-                row.put("Descriptiom", results.getString(3));
                 response.add(row);
             }
             return response.toString();
@@ -37,7 +36,7 @@ public class Playlists{
         }
     }
     @POST
-    @Path("add")
+    @Path("add/")
     public String PlaylistsAdd(@FormDataParam("UserID") Integer UserID, @FormDataParam("PlaylistName") String PlaylistName, @FormDataParam("Description") String Description) {
         System.out.println("Invoked Playlists.PlaylistsAdd()");
         try {

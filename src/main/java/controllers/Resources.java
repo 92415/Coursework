@@ -16,7 +16,7 @@ import java.sql.ResultSet;
 
 public class Resources{
     @GET
-    @Path("list")
+    @Path("list/")
     public String ResourceList() {
         System.out.println("Invoked Resources.ResourceList()");
         JSONArray response = new JSONArray();
@@ -44,20 +44,24 @@ public class Resources{
         }
     }
     @POST
-    @Path("add")
-    public String LibrariesAdd(@FormDataParam("SongID") Integer SongID, @FormDataParam("UserID") Integer UserID) {
-        System.out.println("Invoked Resources.ResourcesAdd()");
+    @Path("add/{SongID}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String AddResource(@PathParam("SongID") Integer SongID) throws Exception {
+        System.out.println(SongID);
+        System.out.println("Invoked Resources.DeleteResource()");
+        if (SongID == null) {
+            throw new Exception("SongName is missing in the HTTP request's URL.");
+        }
         try {
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Resources (SongID, UserID) VALUES (?, ?)");
+            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Resources (SongID, UserID) VALUES (?, (SELECT UserID FROM Users WHERE Token IS NOT NULL))");
             ps.setInt(1, SongID);
-            ps.setInt(2, UserID);
             ps.execute();
-            return "{\"OK\": \"Added Song.\"}";
+            return "{\"OK\": \"Song deleted\"}";
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
-            return "{\"Error\": \"Unable to create new item, please see server console for more info.\"}";
+            return "{\"Error\": \"Unable to delete item, please see server console for more info.\"}";
         }
-
     }
     @POST
     @Path("delete/{SongID}")
@@ -70,7 +74,7 @@ public class Resources{
             throw new Exception("SongName is missing in the HTTP request's URL.");
         }
         try {
-            PreparedStatement ps = Main.db.prepareStatement("Delete From Resources Where SongID = ?");
+            PreparedStatement ps = Main.db.prepareStatement("Delete From Resources Where SongID = ? AND UserID = (SELECT UserID FROM Users WHERE Token IS NOT NULL)");
             ps.setInt(1, SongID);
             ps.execute();
             return "{\"OK\": \"Song deleted\"}";

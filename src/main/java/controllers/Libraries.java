@@ -27,17 +27,18 @@ public class Libraries{
         }
         String Featured;
         try {
-            PreparedStatement ps = Main.db.prepareStatement("Select SongName, ArtistName, FeatureName From Libraries WHERE (SongID NOT IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL))  AND (Genre = ?) Order By SongName");
+            PreparedStatement ps = Main.db.prepareStatement("Select SongID, SongName, ArtistName, FeatureName From Libraries WHERE (SongID NOT IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL))  AND (Genre = ?) Order By SongName");
             ps.setString(1, Genre);
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
-                row.put("SongName", results.getString(1));
-                row.put("ArtistName", results.getString(2));
-                if (results.getString(3) == null){
+                row.put("SongID", results.getInt(1));
+                row.put("SongName", results.getString(2));
+                row.put("ArtistName", results.getString(3));
+                if (results.getString(4) == null){
                     Featured = "";
                 }else{
-                    Featured = results.getString(3);
+                    Featured = results.getString(4);
                 }
                 row.put("FeatureName", Featured);
                 response.add(row);
@@ -58,17 +59,18 @@ public class Libraries{
         String Featured;
         Search = "%" + Search + "%";
         try {
-            PreparedStatement ps = Main.db.prepareStatement("Select SongName, ArtistName, FeatureName From Libraries WHERE SongName LIKE ? Order By SongName");
+            PreparedStatement ps = Main.db.prepareStatement("Select SongID, SongName, ArtistName, FeatureName From Libraries WHERE (SongName LIKE ?) AND SongID NOT IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL) Order By SongName");
             ps.setString(1, Search);
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
-                row.put("SongName", results.getString(1));
-                row.put("ArtistName", results.getString(2));
-                if (results.getString(3) == null){
+                row.put("SongID", results.getInt(1));
+                row.put("SongName", results.getString(2));
+                row.put("ArtistName", results.getString(3));
+                if (results.getString(4) == null){
                     Featured = "";
                 }else{
-                    Featured = results.getString(3);
+                    Featured = results.getString(4);
                 }
                 row.put("FeatureName", Featured);
                 response.add(row);
