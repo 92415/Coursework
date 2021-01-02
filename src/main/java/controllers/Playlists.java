@@ -37,13 +37,12 @@ public class Playlists{
     }
     @POST
     @Path("add/")
-    public String PlaylistsAdd(@FormDataParam("UserID") Integer UserID, @FormDataParam("PlaylistName") String PlaylistName, @FormDataParam("Description") String Description) {
+    public String PlaylistsAdd(@FormDataParam("PlaylistName") String PlaylistName, @FormDataParam("Description") String Description) {
         System.out.println("Invoked Playlists.PlaylistsAdd()");
         try {
-            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Playlists (UserID, PlaylistName, Description) VALUES (?, ?, ?)");
-            ps.setInt(1, UserID);
-            ps.setString(2, PlaylistName);
-            ps.setString(3, Description);
+            PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Playlists (UserID, PlaylistName, Description) VALUES ((SELECT UserID FROM Users WHERE Token IS NOT NULL), ?, ?)");
+            ps.setString(1, PlaylistName);
+            ps.setString(2, Description);
             ps.execute();
             return "{\"OK\": \"Added Playlist.\"}";
         } catch (Exception exception) {

@@ -261,3 +261,42 @@ function removePlaylist(playlistID){
     alert(playlistID);
 
 }
+
+function newPlaylist(){
+    window.open("addPlaylist.html", "_self");
+}
+
+function addPlaylist(){
+    let description = document.getElementById("description").value;
+    let name = document.getElementById("playlistName").value;
+    if (name.length >= 1){
+        if (name.length <= 40){
+            if (description.length <= 150){
+                const formData = new FormData(document.getElementById('inputPlaylistDetails'));
+                let url = "/playlists/add";
+                fetch(url, {
+                    method: "POST",
+                    body: formData,
+                }).then(response => {
+                    return response.json()
+                }).then(response => {
+                    if (response.hasOwnProperty("Error")) {
+                        alert(JSON.stringify(response));
+                    } else {
+                        window.open("playlist.html", "_self");
+                    }
+                });
+            }
+            else{
+                alert("Description must be less that 80 characters long");
+            }
+        }
+        else{
+            alert("Playlist name must be less that 40 characters long");
+        }
+    }
+    else{
+        console.log("Playlist name not entered");
+        alert("Playlist name not entered");
+    }
+}
