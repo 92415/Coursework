@@ -38,7 +38,6 @@ function lengthCheck(logins){
 }
 
 function login(){
-    console.log("Invoked UsersLogin() ");
     let formData = new FormData(document.getElementById('accountDetails'));
     loginAPI(formData);
 }
@@ -254,7 +253,8 @@ function formatPlaylistList(myJSONArray){
 }
 
 function openPlaylist(playlistID){
-    alert(playlistID);
+    let url = "openPlaylist.html?" + playlistID;
+    window.open(url, "_self")
 }
 
 function removePlaylist(playlistID){
@@ -299,4 +299,58 @@ function addPlaylist(){
         console.log("Playlist name not entered");
         alert("Playlist name not entered");
     }
+}
+
+function showSongs(){
+    let playlistID = location.search.substring(1);
+    console.log("Invoked showSongs");
+    const url = "/playlisttransfer/list/";
+    fetch(url + playlistID, {
+        method: "GET",
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));
+        } else {
+            formatSongsList(response, playlistID);
+        }
+    });
+}
+
+function formatSongsList(myJSONArray, playlistID){
+    let dataHTML;
+    for (let item of myJSONArray) {
+        dataHTML = "";
+        let songID = item.SongID;
+        let songName = item.SongName;
+        let artistName = item.ArtistName;
+        let featureName = item.FeatureName;
+        dataHTML += "<tr><td>" + songName + "<td>" + artistName + "<td>" + featureName + "<td>" + "<input type='button' id='" + songID + "' value = 'Delete' name='" + playlistID + "' onclick='removeSong(this.id, this.name)'>"  + "<tr><td>";
+        document.getElementById('songTable').innerHTML += dataHTML;
+    }
+}
+
+function removeSong(songID, playlistID){
+    console.log("Invoked removeSong");
+    const formData = new FormData();
+    formData.append("SongID", songID);
+    formData.append("PlaylistID", playlistID);
+    const url = "/playlisttransfer/delete/";
+    fetch(url, {
+        method: "POST",
+        body: formData,
+    }).then(response => {
+        return response.json();
+    }).then(response => {
+        if (response.hasOwnProperty("Error")) {
+            alert(JSON.stringify(response));
+        } else {
+            let url = "openPlaylist.html?" + playlistID;
+            window.open(url,"_self");
+        }
+    });
+}
+
+function addSong(){
 }

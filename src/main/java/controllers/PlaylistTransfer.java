@@ -16,18 +16,31 @@ import java.sql.ResultSet;
 
 public class PlaylistTransfer{
     @GET
-    @Path("list")
-    public String PlaylistTransferList() {
+    @Path("list/{PlaylistID}")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String PlaylistTransferList(@PathParam("PlaylistID") Integer PlaylistID) throws Exception{
         System.out.println("Invoked PlaylistTransfer.PlaylistTransferList()");
+        String Featured;
         JSONArray response = new JSONArray();
+        if (PlaylistID == null) {
+            throw new Exception("PlaylistID is missing in the HTTP request's URL.");
+        }
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT TransferID, ResourceID, PlaylistID FROM PlaylistTransfer");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongID, Libraries.SongName, Libraries.ArtistName, Libraries.FeatureName FROM Libraries INNER JOIN PlaylistTransfer ON Libraries.SongID = PlaylistTransfer.SongID WHERE (PlaylistTransfer.PlaylistID = ? AND PlaylistTransfer.UserID = (SELECT UserID From Users WHERE Token IS NOT NULL)) ORDER BY Libraries.SongName");
+            ps.setInt(1, PlaylistID);
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
-                row.put("TransferID", results.getInt(1));
-                row.put("ResourceID", results.getInt(2));
-                row.put("PlaylistID", results.getInt(3));
+                row.put("SongID", results.getInt(1));
+                row.put("SongName", results.getString(2));
+                row.put("ArtistName", results.getString(3));
+                if (results.getString(4) == null){
+                    Featured = "";
+                }else{
+                    Featured = results.getString(4);
+                }
+                row.put("FeatureName", Featured);
                 response.add(row);
             }
             return response.toString();
@@ -52,5 +65,22 @@ public class PlaylistTransfer{
             return "{\"Error\": \"Unable to create new item, please see server console for more info.\"}";
         }
 
+    }
+    @POST
+    @Path("delete/")
+    public String DeleteSong(@FormDataParam("SongID") Integer SongID, @FormDataParam("PlaylistID") Integer PlaylistID) {
+        System.out.println(SongID);
+        System.out.println(PlaylistID);
+        System.out.println("Invoked PlaylistTransfer.DeleteSong()");
+        try {
+            PreparedStatement ps = Main.db.prepareStatement("Delete From PlaylistTransfer Where SongID = ? AND PlaylistID = ? AND UserID = (SELECT UserID FROM Users WHERE Token IS NOT NULL)");
+            ps.setInt(1, SongID);
+            ps.setInt(2, PlaylistID);
+            ps.execute();
+            return "{\"OK\": \"Song deleted\"}";
+        } catch (Exception exception) {
+            System.out.println("Database error: " + exception.getMessage());
+            return "{\"Error\": \"Unable to delete item, please see server console for more info.\"}";
+        }
     }
 }

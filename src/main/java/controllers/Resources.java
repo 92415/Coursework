@@ -48,7 +48,6 @@ public class Resources{
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public String AddResource(@PathParam("SongID") Integer SongID) throws Exception {
-        System.out.println(SongID);
         System.out.println("Invoked Resources.DeleteResource()");
         if (SongID == null) {
             throw new Exception("SongName is missing in the HTTP request's URL.");
