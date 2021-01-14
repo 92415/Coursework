@@ -16,10 +16,10 @@ import java.sql.ResultSet;
 
 public class Libraries{
     @GET
-    @Path("list/{genre}")
+    @Path("list/{Genre}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public String LibrariesList(@PathParam("genre") String Genre) throws Exception {
+    public String LibrariesList(@PathParam("Genre") String Genre) throws Exception {
         System.out.println("Invoked Libraries.LibrariesList()");
         JSONArray response = new JSONArray();
         if (Genre == null) {
@@ -50,10 +50,10 @@ public class Libraries{
         }
     }
     @GET
-    @Path("search/{searcher}")
+    @Path("search/{Searcher}")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public String LibrariesSearch(@PathParam("searcher") String Search){
+    public String LibrariesSearch(@PathParam("Searcher") String Search){
         System.out.println("Invoked Libraries.LibrariesSearch()");
         JSONArray response = new JSONArray();
         String Featured;

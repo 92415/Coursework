@@ -16,13 +16,28 @@ import java.sql.ResultSet;
 
 public class Resources{
     @GET
-    @Path("list/")
-    public String ResourceList() {
+    @Path("list/{order}/")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String ResourceList(@PathParam("order") String Order) throws Exception {
         System.out.println("Invoked Resources.ResourceList()");
         JSONArray response = new JSONArray();
+        if (Order == null) {
+            throw new Exception("Genre is missing in the HTTP request's URL.");
+        }
         String Featured;
+        String OrderBy;
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongID, Libraries.SongName, Libraries.ArtistName, Libraries.FeatureName FROM Libraries INNER JOIN Resources ON Libraries.SongID = Resources.SongID INNER JOIN USERS ON (Resources.UserID = Users.UserID) WHERE (Users.Token IS NOT NULL) ORDER BY SongName");
+            if (Order.equals("0")){
+               OrderBy = "SongName";
+            }else if (Order.equals("1")){
+                OrderBy = "SongName DESC";
+            }else if (Order.equals("2")){
+                OrderBy = "ArtistName";
+            }else{
+                OrderBy = "ArtistName DESC";
+            }
+            PreparedStatement ps = Main.db.prepareStatement("SELECT Libraries.SongID, Libraries.SongName, Libraries.ArtistName, Libraries.FeatureName FROM Libraries INNER JOIN Resources ON Libraries.SongID = Resources.SongID INNER JOIN USERS ON (Resources.UserID = Users.UserID) WHERE (Users.Token IS NOT NULL) ORDER BY " + OrderBy);
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
                 JSONObject row = new JSONObject();
@@ -67,15 +82,17 @@ public class Resources{
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public String DeleteResource(@PathParam("SongID") Integer SongID) throws Exception {
-        System.out.println(SongID);
         System.out.println("Invoked Resources.DeleteResource()");
         if (SongID == null) {
-            throw new Exception("SongName is missing in the HTTP request's URL.");
+            throw new Exception("SongID is missing in the HTTP request's URL.");
         }
         try {
-            PreparedStatement ps = Main.db.prepareStatement("Delete From Resources Where SongID = ? AND UserID = (SELECT UserID FROM Users WHERE Token IS NOT NULL)");
-            ps.setInt(1, SongID);
-            ps.execute();
+            PreparedStatement ps1 = Main.db.prepareStatement("DELETE FROM Resources WHERE SongID = ? AND UserID = (SELECT UserID FROM Users WHERE Token IS NOT NULL)");
+            ps1.setInt(1, SongID);
+            ps1.execute();
+            PreparedStatement ps2 = Main.db.prepareStatement("DELETE FROM PlaylistTransfer Where SongID = ? AND UserID = (SELECT UserID FROM Users WHERE Token IS NOT NULL)");
+            ps2.setInt(1, SongID);
+            ps2.execute();
             return "{\"OK\": \"Song deleted\"}";
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
