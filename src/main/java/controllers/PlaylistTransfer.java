@@ -92,7 +92,7 @@ public class PlaylistTransfer{
             throw new Exception("PlaylistID is missing in the HTTP request's URL.");
         }
         try {
-            PreparedStatement ps = Main.db.prepareStatement("SELECT SongID, SongName, ArtistName, FeatureName FROM Libraries WHERE (SongID IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL)) AND (SongID NOT IN (SELECT SongID FROM PlaylistTransfer WHERE PlaylistID = ?));");
+            PreparedStatement ps = Main.db.prepareStatement("SELECT SongID, SongName, ArtistName, FeatureName FROM Libraries WHERE (SongID IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL)) AND (SongID NOT IN (SELECT SongID FROM PlaylistTransfer WHERE PlaylistID = ?)) ORDER BY SongName");
             ps.setInt(1, PlaylistID);
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {

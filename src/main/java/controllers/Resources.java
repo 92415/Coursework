@@ -23,7 +23,7 @@ public class Resources{
         System.out.println("Invoked Resources.ResourceList()");
         JSONArray response = new JSONArray();
         if (Order == null) {
-            throw new Exception("Genre is missing in the HTTP request's URL.");
+            throw new Exception("Order is missing in the HTTP request's URL.");
         }
         String Featured;
         String OrderBy;

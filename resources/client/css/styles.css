@@ -27,11 +27,11 @@ body{
     border-color: black;
     font-size: 80px;
 }
+
 #mainHeader{
     border-style:solid;
     border-color: black;
     font-size: 80px;
-    height: 10%;
 }
 
 a:link,a:visited{
@@ -50,13 +50,6 @@ a:hover, a:active{
     background-color: grey;
 }
 
-
-
-#tabletop{
-    width: 100%;
-    align-content: center;
-    font-size: 20px;
-}
 table#tabletop {
     table-layout: fixed ;
     width: 100% ;
@@ -66,12 +59,6 @@ table#tabletop {
 table#tabletop td {
     width: 25% ;
 }
-
-#resourceTable{
-     width: 100%;
-     align-content: center;
-     font-size: 20px;
- }
 
 table#resourceTable {
     table-layout: fixed ;
@@ -156,17 +143,7 @@ table#songTable td {
     width: 25% ;
 }
 
-#songTable{
-    width: 100%;
-    align-content: center;
-    font-size: 20px;
-}
 
-#playlistTop{
-    width: 100%;
-    align-content: center;
-    font-size: 20px;
-}
 table#playlistTop {
     table-layout: fixed ;
     width: 100% ;
@@ -196,12 +173,6 @@ table#unownedTable{
 }
 table#unownedTable td {
     width: 25% ;
-}
-
-#unownedTable{
-    width: 100%;
-    align-content: center;
-    font-size: 20px;
 }
 
 #updatePlaylist{

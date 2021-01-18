@@ -76,6 +76,8 @@ public class Playlists{
     }
     @GET
     @Path("detail/{playlistID}/")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
     public String PlaylistList(@PathParam("playlistID") Integer PlaylistID) throws Exception {
         System.out.println("Invoked Playlists.PlaylistDetails()");
         if (PlaylistID == null) {

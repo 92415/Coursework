@@ -145,7 +145,7 @@ function removeResource(songID){
         if (response.hasOwnProperty("Error")) {
             alert(JSON.stringify(response));
         } else {
-            window.open("resources.html","_self");
+            window.open("resources.html?0","_self");
         }
     });
 }
