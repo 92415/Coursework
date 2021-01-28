@@ -195,7 +195,6 @@ function formatLibraryList(myJSONArray){
         dataHTML += "<tr><td>" + songName + "<td>" + artistName + "<td>" + featureName + "<td>" + "<input type='button' id='" + songID + "' value = 'Add' onclick='addResource(this.id)'>"  + "<tr><td>";
         document.getElementById('libraryTable').innerHTML += dataHTML;
     }
-
 }
 
 
@@ -485,9 +484,9 @@ function formatPlaylistEdit(myJSONArray){
         dataHTML = "";
         let playlistName = item.PlaylistName;
         let description = item.Description;
-        dataHTML = "Name: <input type='text' name='PlaylistName' id='newPlaylistName' value='" + playlistName + "'><br><br> Description:<br><textarea type='text' name='Description' id='newDescription' value='" + description + "'></textarea><br>";
+        dataHTML = "Name: <input type='text' name='PlaylistName' id='newPlaylistName' value='" + playlistName + "'><br><br> Description:<br><textarea type='text' name='Description' id='newDescription'>" + description + "</textarea><br>";
         document.getElementById('updatedPlaylistDetails').innerHTML = dataHTML;
-        document.getElementById('updateButton').innerHTML = "<button onclick=\"cancelEdit()\">Cancel</button> <button id='" + playlistName + "' name='" + description + "' onclick='updatePlaylist(this.id, this.name)'>Change details</button>"
+        document.getElementById('updateButton').innerHTML = "<button onclick=\"cancelEdit()\">Cancel</button> <button id='" + playlistName + "' name='" + description + "' onclick='updatePlaylist(this.id, this.name)'>Change details</button>";
     }
 }
 

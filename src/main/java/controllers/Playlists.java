@@ -102,7 +102,7 @@ public class Playlists{
     }
     @POST
     @Path("update/")
-    public String PlaylistsUpdate(@FormDataParam("PlaylistID") Integer PlaylistID, @FormDataParam("PlaylistName") String PlaylistName, @FormDataParam("Description") String Description) {
+    public String PlaylistsUpdate(@FormDataParam("PlaylistID") Integer PlaylistID, @FormDataParam("PlaylistName") String PlaylistName, @FormDataParam("Description") String Description){
         System.out.println("Invoked Playlists.PlaylistsUpdate()");
         try {
             PreparedStatement ps = Main.db.prepareStatement("UPDATE Playlists SET PlaylistName = ?, Description = ? WHERE PlaylistID = ?");

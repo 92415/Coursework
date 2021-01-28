@@ -27,7 +27,7 @@ public class Libraries{
         }
         String Featured;
         try {
-            PreparedStatement ps = Main.db.prepareStatement("Select SongID, SongName, ArtistName, FeatureName From Libraries WHERE (SongID NOT IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL))  AND (Genre = ?) Order By SongName");
+            PreparedStatement ps = Main.db.prepareStatement("Select SongID, SongName, ArtistName, FeatureName From Libraries WHERE (SongID NOT IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL))  AND (Genre = ?) AND (Explicit <= (SELECT AllowExplicit FROM Users WHERE Token IS NOT NULL)) Order By SongName");
             ps.setString(1, Genre);
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {
@@ -59,7 +59,7 @@ public class Libraries{
         String Featured;
         Search = "%" + Search + "%";
         try {
-            PreparedStatement ps = Main.db.prepareStatement("Select SongID, SongName, ArtistName, FeatureName From Libraries WHERE (SongName LIKE ?) AND SongID NOT IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL) Order By SongName");
+            PreparedStatement ps = Main.db.prepareStatement("Select SongID, SongName, ArtistName, FeatureName From Libraries WHERE (SongName LIKE ?) AND SongID NOT IN (SELECT SongID FROM Resources INNER JOIN Users ON Resources.UserID = Users.UserID WHERE Users.Token IS NOT NULL) AND (Explicit <= (SELECT AllowExplicit FROM Users WHERE Token IS NOT NULL)) Order By SongName");
             ps.setString(1, Search);
             ResultSet results = ps.executeQuery();
             while (results.next()==true) {

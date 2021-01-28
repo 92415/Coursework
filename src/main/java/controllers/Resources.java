@@ -63,18 +63,18 @@ public class Resources{
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     public String AddResource(@PathParam("SongID") Integer SongID) throws Exception {
-        System.out.println("Invoked Resources.DeleteResource()");
+        System.out.println("Invoked Resources.AddResource()");
         if (SongID == null) {
-            throw new Exception("SongName is missing in the HTTP request's URL.");
+            throw new Exception("SongID is missing in the HTTP request's URL.");
         }
         try {
             PreparedStatement ps = Main.db.prepareStatement("INSERT INTO Resources (SongID, UserID) VALUES (?, (SELECT UserID FROM Users WHERE Token IS NOT NULL))");
             ps.setInt(1, SongID);
             ps.execute();
-            return "{\"OK\": \"Song deleted\"}";
+            return "{\"OK\": \"Song added\"}";
         } catch (Exception exception) {
             System.out.println("Database error: " + exception.getMessage());
-            return "{\"Error\": \"Unable to delete item, please see server console for more info.\"}";
+            return "{\"Error\": \"Unable to add item, please see server console for more info.\"}";
         }
     }
     @POST
